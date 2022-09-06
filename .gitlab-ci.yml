@@ -40,16 +40,16 @@ nginx-build:
 
 
 deploy-prod:
-before_script:
-  - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-  - eval $(ssh-agent -s)
-  - echo "$ruvpn" | tr -d '\r' | ssh-add -
-  - mkdir -p ~/.ssh
-  - chmod 700 ~/.ssh
-
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$ruvpn" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  
   stage: deploy
   script:
-    - echo "ssh root@ruvpn.ru hostname"
+    - ssh root@ruvpn.ru hostname
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
