@@ -59,7 +59,7 @@ deploy-prod:
 config-prod:
   needs: 
     - nginx-build
-    - nginx-config
+    - deploy-prod
   tags: 
   -  shell
   before_script:
