@@ -38,9 +38,3 @@ delete_image:
     - branches
   except:
     - main
-
-You can download the latest reg release from the releases page, then update the code example by changing the REG_SHA256 and REG_VERSION variables defined in the delete_image job.
-Delete images by using a cleanup policy
-You can create a per-project cleanup policy to ensure older tags and images are regularly removed from the Container Registry.
-
-Limitati
