@@ -17,18 +17,50 @@ nginx-build:
     DOCKER_HOST: tcp://dockerdaemon:2375/
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
+    IMAGE_NAME: "nginx"
 
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - cd build/nginx
-    - docker build -t "$CI_REGISTRY_IMAGE:latest"  .
-    - docker run -d --name nginx "$CI_REGISTRY_IMAGE:latest"
-    - docker tag "$CI_REGISTRY_IMAGE:latest" "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-    - docker tag "$CI_REGISTRY_IMAGE:latest" "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
-    - docker tag "$CI_REGISTRY_IMAGE:latest" "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME"
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA  .
+    - docker run -d --name nginx "$CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA"
     - docker exec  nginx nginx -t
     - docker rm -f nginx
-    - docker push "$CI_REGISTRY_IMAGE:latest"
+    - docker build . -t $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+    - IMAGE_ID=$(docker images | grep $CI_REGISTRY/$CI_PROJECT_PATH\/$IMAGE_NAME | awk '{print $3}')
+    - docker tag $IMAGE_ID $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
+
+
+nginx-build:
+  stage: build
+  tags: 
+    - docker
+  image:
+    name: docker:stable
+  services:
+   - name: docker:dind
+     alias: dockerdaemon
+  variables:
+    DOCKER_HOST: tcp://dockerdaemon:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    IMAGE_NAME: "php"
+
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - cd build/php
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA  .
+    - docker run -d --name nginx "$CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA"
+    - docker exec  nginx nginx -t
+    - docker rm -f nginx
+    - docker build . -t $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+    - IMAGE_ID=$(docker images | grep $CI_REGISTRY/$CI_PROJECT_PATH\/$IMAGE_NAME | awk '{print $3}')
+    - docker tag $IMAGE_ID $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
+
 
 
 deploy-prod:
@@ -47,7 +79,7 @@ deploy-prod:
   stage: deploy
   script:
     - ssh root@ruvpn.derunix.ru docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
-    - ssh root@ruvpn.derunix.ru docker pull "$CI_REGISTRY_IMAGE:latest"
+    - ssh root@ruvpn.derunix.ru docker pull "$CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest"
     - ssh root@ruvpn.derunix.ru docker stop nginx || echo "nginx not running"
     - ssh root@ruvpn.derunix.ru docker rm nginx || echo "nginx not exist"
     - ssh root@ruvpn.derunix.ru docker run -d --name nginx -p 80:80 -p 443:443 --restart=always  -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx:/etc/nginx  "$CI_REGISTRY_IMAGE:latest"
@@ -71,7 +103,7 @@ config-prod:
   stage: config
   script:
     - scp nginx.conf root@ruvpn.derunix.ru:/etc/nginx/nginx.conf -o StrictHostKeyChecking=no  
-    - ssh root@ruvpn.derunix.ru docker run --rm --name nginx-test -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro nginx /usr/sbin/nginx -t
+    - ssh root@ruvpn.derunix.ru docker run --rm --name nginx-test -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest /usr/sbin/nginx -t
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
