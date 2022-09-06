@@ -1,12 +1,6 @@
 build-job:
   stage: build
-  image: docker:20.10.16
-  services:
-    - docker:20.10.16-dind
+  image: docker:stable
   script:
     - docker build ./build/php -t my-php-image
-
-test-job1:
-  stage: test
-  script:
-    - echo "This job tests something"
+    - docker build ./build/nginx -t my-nginx-image
