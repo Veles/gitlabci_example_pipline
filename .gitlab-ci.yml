@@ -33,13 +33,15 @@ deploy-prod:
     - echo "$SSH_PRIVATE_KEY_PROD" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - echo -e "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
   
   stage: deploy
   script:
-    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@ruvpn.derunix.ru docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" && docker pull "$CI_REGISTRY_IMAGE:latest" && docker stop nginx && docker rm nginx && docker run -d --name nginx -p 80:80 -p 443:443 --restart=always  -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx:/etc/nginx  "$CI_REGISTRY_IMAGE:latest"
-    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@ruvpn.derunix.ru docker pull "$CI_REGISTRY_IMAGE:latest"
-    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@ruvpn.derunix.ru docker stop nginx && docker rm nginx
-    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null docker run -d --name nginx -p 80:80 -p 443:443 --restart=always  -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx:/etc/nginx  "$CI_REGISTRY_IMAGE:latest"
+    - ssh root@ruvpn.derunix.ru docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" && docker pull "$CI_REGISTRY_IMAGE:latest" && docker stop nginx && docker rm nginx && docker run -d --name nginx -p 80:80 -p 443:443 --restart=always  -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx:/etc/nginx  "$CI_REGISTRY_IMAGE:latest"
+    - ssh root@ruvpn.derunix.ru docker pull "$CI_REGISTRY_IMAGE:latest"
+    - ssh root@ruvpn.derunix.ru docker stop nginx && docker rm nginx
+    - ssh root@ruvpn.derunix.ru docker run -d --name nginx -p 80:80 -p 443:443 --restart=always  -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx:/etc/nginx  "$CI_REGISTRY_IMAGE:latest"
   
 
   environment:
