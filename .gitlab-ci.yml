@@ -44,7 +44,6 @@ deploy-prod:
     - chmod 700 ~/.ssh
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - echo -e "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
-
   stage: deploy
   script:
     - ssh root@ruvpn.derunix.ru docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
@@ -52,9 +51,6 @@ deploy-prod:
     - ssh root@ruvpn.derunix.ru docker stop nginx || echo "nginx not running"
     - ssh root@ruvpn.derunix.ru docker rm nginx || echo "nginx not exist"
     - ssh root@ruvpn.derunix.ru docker run -d --name nginx -p 80:80 -p 443:443 --restart=always  -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx:/etc/nginx  "$CI_REGISTRY_IMAGE:latest"
-
-  
-
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
@@ -72,15 +68,10 @@ config-prod:
     - chmod 700 ~/.ssh
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - echo -e "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
-
   stage: config
   script:
-    - ssh root@ruvpn.derunix.ru scp nginx.conf root@ruvpn.derunix.ru:/etc/nginx/nginx.conf
+    - ssh root@ruvpn.derunix.ru scp nginx.conf root@ruvpn.derunix.ru:/etc/nginx/nginx.conf -o StrictHostKeyChecking=no  
     - ssh root@ruvpn.derunix.ru docker run --rm --name nginx-test -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro nginx /usr/sbin/nginx -t
-  
-
-  
-
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
