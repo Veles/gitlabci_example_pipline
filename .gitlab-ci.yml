@@ -49,7 +49,7 @@ deploy-prod:
   
   stage: deploy
   script:
-    - ssh root@ruvpn.ru hostname
+    - ssh root@ruvpn.ru hostname -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
