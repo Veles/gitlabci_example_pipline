@@ -21,6 +21,7 @@ nginx-build:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - cd build/nginx
     - docker build -t "$CI_REGISTRY_IMAGE:latest" .
+    - docker run -d --name nginx "$CI_REGISTRY_IMAGE:latest"
     - docker push "$CI_REGISTRY_IMAGE:latest"
 
 
