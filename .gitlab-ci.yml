@@ -3,6 +3,7 @@ variables:
   DOCKER_TLS_CERTDIR: ""
 build-job:
   stage: build
+  image: docker:20.10.16
   services:
   - "docker:dind"
   script:
