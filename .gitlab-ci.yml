@@ -1,6 +1,8 @@
 build-job:
+  image: docker:20.10.16
   stage: build
-  variables:
+  services:
+    - docker:20.10.16-dind
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
