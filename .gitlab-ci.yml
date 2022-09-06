@@ -1,12 +1,9 @@
 build-job:
-  image: docker:20.10.16
-  stage: build_nginx
-  services:
-    - docker:20.10.16-dind
+  stage: build
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
-    - docker build -t $IMAGE_TAG build/nginx
+    - docker build -t $IMAGE_TAG ./build/nginx
 
 
 
