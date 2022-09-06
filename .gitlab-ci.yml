@@ -1,9 +1,10 @@
 stages:
   - build
+  - deploy
 
 # Build and push the Docker image to the GitLab image
 # registry using Docker-in-Docker.
-dind-build:
+nginx-build:
   stage: build
 
   image:
@@ -36,3 +37,22 @@ dind-build:
     - cd build/nginx
     - docker build -t "$CI_REGISTRY_IMAGE:nginx" .
     - docker push "$CI_REGISTRY_IMAGE:nginx"
+
+
+deploy-prod:
+before_script:
+  - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - echo "$ruvpn" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+
+  stage: deploy
+  script:
+    - echo "ssh root@ruvpn.ru hostname"
+  environment:
+    name: prod
+    url: https://ruvpn.derunix.ru
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
