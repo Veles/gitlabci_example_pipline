@@ -22,6 +22,8 @@ nginx-build:
     - cd build/nginx
     - docker build -t "$CI_REGISTRY_IMAGE:latest" .
     - docker run -d --name nginx "$CI_REGISTRY_IMAGE:latest"
+    - docker exec  nginx nginx -t
+    - docker rm -f nginx
     - docker push "$CI_REGISTRY_IMAGE:latest"
 
 
@@ -44,7 +46,7 @@ deploy-prod:
   
   stage: deploy
   script:
-    - ssh root@ruvpn.derunix.ru docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" && docker pull "$CI_REGISTRY_IMAGE:latest" && docker stop nginx && docker rm nginx && docker run -d --name nginx -p 80:80 -p 443:443 --restart=always  -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx:/etc/nginx  "$CI_REGISTRY_IMAGE:latest"
+    - ssh root@ruvpn.derunix.ru docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
     - ssh root@ruvpn.derunix.ru docker pull "$CI_REGISTRY_IMAGE:latest"
     - ssh root@ruvpn.derunix.ru docker stop nginx || echo "nginx not running"
     - ssh root@ruvpn.derunix.ru docker rm nginx || echo "nginx not exist"
