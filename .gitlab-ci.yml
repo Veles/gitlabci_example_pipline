@@ -36,6 +36,11 @@ deploy-prod:
     - chmod 700 ~/.ssh
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - echo -e "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+
+    stage: nginx-config
+  script:
+    - ssh root@ruvpn.derunix.ru scp nginx.conf root@ruvpn.derunix.ru:/etc/nginx/nginx.conf
+    - ssh root@ruvpn.derunix.ru docker run --rm --name nginx-test -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro nginx /usr/sbin/nginx -t
   
   stage: deploy
   script:
