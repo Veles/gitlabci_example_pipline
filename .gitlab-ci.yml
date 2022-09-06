@@ -1,5 +1,7 @@
 build-job:
   stage: build
+  services:
+  - "docker:dind"
   image: docker:stable
   script:
     - docker build ./build/php -t my-php-image
