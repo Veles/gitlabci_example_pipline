@@ -34,5 +34,5 @@ dind-build:
     # image name.
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - cd build/nginx
-    - docker build -t "$CI_REGISTRY_IMAGE:dind" .
-    - docker push "$CI_REGISTRY_IMAGE:dind"
+    - docker build -t "$CI_REGISTRY_IMAGE:nginx" .
+    - docker push "$CI_REGISTRY_IMAGE:nginx"
