@@ -33,5 +33,6 @@ dind-build:
     # other Docker registry though by changing the login and
     # image name.
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    - docker build -t "$CI_REGISTRY_IMAGE:dind" build/nginx
+     cd build/nginx
+    - docker build -t "$CI_REGISTRY_IMAGE:dind" .
     - docker push "$CI_REGISTRY_IMAGE:dind"
