@@ -3,7 +3,7 @@ stages:
   - clean
 
 build_image:
-  image: my-nginx:
+  image: my-nginx:20.10.16
   stage: build
   services:
     - docker:20.10.16-dind
