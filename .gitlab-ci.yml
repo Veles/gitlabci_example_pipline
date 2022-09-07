@@ -46,7 +46,7 @@ site-build:
     DOCKER_TLS_CERTDIR: ""
   script:
    - cd build/
-   - rm site/.placeholder
+   - rm site/ -rf
    - git clone https://github.com/banago/simple-php-website.git site 
    -  tar -czf site.tar.gz site
   artifacts:
