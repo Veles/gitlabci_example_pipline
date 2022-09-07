@@ -65,8 +65,8 @@ php-build:
     
 nginx-test:
   needs: 
-   - nginx-build
-     optional: true
+    - job: nginx-build
+      optional: true
 
   stage: test
   tags: 
@@ -89,8 +89,9 @@ nginx-test:
 php-test:
   stage: test
   needs: 
-   - php-build
-     optional: true
+  needs: 
+    - job: php-build
+      optional: true
   tags: 
     - docker
   image:
