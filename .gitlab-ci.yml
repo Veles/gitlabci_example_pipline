@@ -31,6 +31,7 @@ nginx-build:
     - docker tag $IMAGE_ID $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
+  when: manual
   only:
     changes:
       - ./build/nginx/Dockerfile  
@@ -59,6 +60,7 @@ php-build:
     - docker tag $IMAGE_ID $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
+  when: manual
   only:
     changes:
       - ./build/php/Dockerfile  
@@ -105,7 +107,7 @@ php-test:
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - docker pull $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest
-    - docker run --rm --name test_nginx $CI_REGISTRY/$CI_PROJECT_PATH/php:latest /bin/php-fpm -v
+    - docker run --rm --name test_nginx $CI_REGISTRY/$CI_PROJECT_PATH/php:latest /usr/sbin/php-fpm -v
 
 
 deploy-prod:
