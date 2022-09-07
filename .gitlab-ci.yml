@@ -4,7 +4,6 @@ stages:
   - config
   - deploy
 
-
 nginx-build:
   stage: build
   tags: 
@@ -89,8 +88,7 @@ nginx-test:
     - docker run --rm --name test_nginx $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest nginx -t
 
 php-test:
-  stage: test
-  needs: 
+  stage: test 
   needs: 
     - job: php-build
       optional: true
@@ -112,9 +110,9 @@ php-test:
 
 
 deploy-prod:
-  depends_on:
-    - nginx-test
-    - php-test
+needs:
+    - job: php-test
+    - job: nginx-test
   tags: 
   -  shell
   before_script:
@@ -141,8 +139,8 @@ deploy-prod:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH 
 
 config-prod:
-  depends_on:
-    - nginx-test
+needs:
+    - job: nginx-test
   tags: 
   -  shell
   before_script:
@@ -160,7 +158,6 @@ config-prod:
   only:
       changes:
       - ./nginx.conf  
-
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
