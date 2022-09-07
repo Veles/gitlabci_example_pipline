@@ -51,7 +51,7 @@ site-build:
   script:
    - cd build/site
    - rm .placeholder
-   - git clone https://github.com/banago/simple-php-website.git . 
+   - git clone https://github.com/banago/simple-php-website.git . -f
    - cd .. && tar -czf site.tar.gz site
   artifacts:
     paths:
@@ -179,7 +179,7 @@ config-prod:
   script:
     - scp  -o StrictHostKeyChecking=no  nginx.conf root@ruvpn.derunix.ru:/etc/nginx/nginx.conf
     - ssh root@ruvpn.derunix.ru docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
-    - ssh root@ruvpn.derunix.ru docker run -d --name php  -net web --restart=always  "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"    
+    - ssh root@ruvpn.derunix.ru docker run -d --name php  --net web --restart=always  "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"    || true
     - ssh root@ruvpn.derunix.ru docker run --rm --name nginx-test -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest /usr/sbin/nginx -t
   environment:
     name: prod
