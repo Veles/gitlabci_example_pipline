@@ -17,7 +17,7 @@ COPY www /www
 
 WORKDIR /www
 
-CMD ["/bin/php-fpm81", "-F"]
+CMD [" /usr/sbin/php-fpm", "-F"]
 
 EXPOSE 80
 

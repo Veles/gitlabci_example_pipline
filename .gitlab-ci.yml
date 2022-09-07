@@ -45,6 +45,8 @@ php-build:
   services:
    - name: docker:dind
      alias: dockerdaemon
+  trigger:
+  test/php
   variables:
     DOCKER_HOST: tcp://dockerdaemon:2375/
     DOCKER_DRIVER: overlay2
@@ -63,10 +65,10 @@ php-build:
     changes:
       - ./build/php/Dockerfile  
     
-nginx-test:
-  stage: test
+php-test:
   needs: 
-   - nginx-build
+   - php-build
+  stage: test
   tags: 
     - docker
   image:
@@ -84,10 +86,10 @@ nginx-test:
     - docker pull $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest
     - docker run --rm --name test_nginx $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest nginx -t
 
-nginx-test:
+php-test:
   stage: test
   needs: 
-   - nginx-build
+   - php-build
   tags: 
     - docker
   image:
@@ -99,11 +101,11 @@ nginx-test:
     DOCKER_HOST: tcp://dockerdaemon:2375/
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
-
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - docker pull $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest
     - docker run --rm --name test_nginx $CI_REGISTRY/$CI_PROJECT_PATH/php:latest /bin/php-fpm -v
+
 
 deploy-prod:
   tags: 
