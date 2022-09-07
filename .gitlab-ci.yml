@@ -47,7 +47,7 @@ site-build:
   script:
    - cd build/
    - rm site/.placeholder
-   - git clone https://github.com/banago/simple-php-website.git site -f
+   - git clone https://github.com/banago/simple-php-website.git site 
    -  tar -czf site.tar.gz site
   artifacts:
     paths:
