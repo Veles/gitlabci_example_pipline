@@ -29,8 +29,6 @@ nginx-build:
     - docker tag $IMAGE_ID $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
-  when: manual
-  allow_failure: true 
 
 
 site-build:
@@ -51,8 +49,6 @@ site-build:
    - rm site/ -rf
    - git clone https://github.com/banago/simple-php-website.git site 
    - tar -czf site.tar.gz site
-  when: manual
-  allow_failure: true 
   artifacts:
     paths:
       - build/site.tar.gz
@@ -81,8 +77,7 @@ php-build:
     - docker tag $IMAGE_ID $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
-  when: manual
-  allow_failure: true 
+  
 
 
 nginx-test:
@@ -159,9 +154,18 @@ deploy-prod:
   environment:    
     name: prod
     url: https://ruvpn.derunix.ru
+  when: manual
+  allow_failure: true 
   
 
 config-prod:
+  needs:
+    - job: php-test
+      optional: false
+    - job: nginx-test
+      optional: false
+    - job: site-build
+      artifacts: true
   tags: 
   -  shell
   before_script:
@@ -184,4 +188,6 @@ config-prod:
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
+  when: manual
+  allow_failure: true
 
