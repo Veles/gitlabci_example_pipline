@@ -17,7 +17,7 @@ COPY www /www
 
 WORKDIR /www
 
-ENTRYPOINT ["nginx -g 'daemon off;'"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
 EXPOSE 80
 
