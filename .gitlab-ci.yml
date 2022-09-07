@@ -150,7 +150,7 @@ config-prod:
   stage: config
   script:
     - scp  -o StrictHostKeyChecking=no  nginx.conf root@ruvpn.derunix.ru:/etc/nginx/nginx.conf
-    - ssh root@ruvpn.derunix.ru docker run --rm --name nginx-test -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest /usr/sbin/nginx -t
+    - ssh root@ruvpn.derunix.ru docker run --rm --name nginx-test -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest /usr/sbin/nginx -t
     - echo "ok"
   environment:
     name: prod
