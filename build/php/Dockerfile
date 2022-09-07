@@ -17,7 +17,7 @@ COPY www /www
 
 WORKDIR /www
 
-ENTRYPOINT ["/init"]
+ENTRYPOINT ["nginx -g 'daemon off;'"]
 
 EXPOSE 80
 
