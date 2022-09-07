@@ -112,7 +112,9 @@ php-test:
 deploy-prod:
 needs:
     - job: php-test
+      optional: false
     - job: nginx-test
+      optional: false
   tags: 
   -  shell
   before_script:
@@ -141,6 +143,7 @@ needs:
 config-prod:
 needs:
     - job: nginx-test
+      optional: false
   tags: 
   -  shell
   before_script:
