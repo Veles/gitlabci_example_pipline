@@ -146,7 +146,8 @@ deploy-prod:
     - ssh root@ruvpn.derunix.ru docker run -d --name nginx —-hostname nginx -p 80:80 -p 443:443 --restart=always  -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx:/etc/nginx  "$CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest"
     - ssh root@ruvpn.derunix.ru docker pull "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"
     - ssh root@ruvpn.derunix.ru docker stop php && docker rm php
-    - ssh root@ruvpn.derunix.ru docker run -d --name php —hostname php --restart=always  "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"    
+    - ssh root@ruvpn.derunix.ru docker run -d --name php —hostname php --restart=always -v /www/public:/www/public  "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"  
+    - ssh root@ruvpn.derunix.ru rm -rf /www/public && mkdir -p /www/public  
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
