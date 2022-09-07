@@ -1,6 +1,6 @@
 stages:
   - build
-  - test
+
   - config
   - deploy
 
@@ -112,8 +112,6 @@ deploy-prod:
     url: https://ruvpn.derunix.ru
 
 config-prod:
-  needs: 
-    - containers-test
   tags: 
   -  shell
   before_script:
