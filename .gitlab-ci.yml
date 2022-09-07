@@ -170,7 +170,7 @@ config-prod:
     -  ssh root@ruvpn.derunix.ru docker network create web || true
     -  ssh root@ruvpn.derunix.ru docker rm -f php
     -  ssh root@ruvpn.derunix.ru docker run --name php -d --net web gitlab.derunix.ru:5050/derunix/test-project/php:latest
-    -  ssh root@ruvpn.derunix.ru docker run —-name nginx-test --net web —-rm -v "/etc/letsencrypt:/etc/letsencrypt" -v "/etc/nginx/nginx.conf:/etc/nginx/nginx.conf" gitlab.derunix.ru:5050/derunix/test-project/nginx:latest "/usr/sbin/nginx -t"
+    -  ssh root@ruvpn.derunix.ru docker run —-name nginx-test --net web —-rm -v "/etc/letsencrypt:/etc/letsencrypt" -v "/etc/nginx/nginx.conf:/etc/nginx/nginx.conf" -i -t gitlab.derunix.ru:5050/derunix/test-project/nginx:latest "/usr/sbin/nginx -t"
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
