@@ -105,8 +105,8 @@ php-test:
     DOCKER_TLS_CERTDIR: ""
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    - docker pull $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest
-    - docker run --rm --name test_nginx $CI_REGISTRY/$CI_PROJECT_PATH/php:latest /bin/php-fpm -v
+    - docker pull $CI_REGISTRY/$CI_PROJECT_PATH/php:latest
+    - docker run --rm --name test_nginx $CI_REGISTRY/$CI_PROJECT_PATH/php:latest  /usr/sbin/php-fpm -v
 
 
 deploy-prod:
@@ -124,9 +124,9 @@ deploy-prod:
   script:
     - ssh root@ruvpn.derunix.ru docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
     - ssh root@ruvpn.derunix.ru docker pull "$CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest"
-    - ssh root@ruvpn.derunix.ru docker stop nginx || echo "nginx not running"
     - ssh root@ruvpn.derunix.ru docker pull "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"
-    - ssh root@ruvpn.derunix.ru docker rm nginx || echo "nginx not exist"
+    - ssh root@ruvpn.derunix.ru docker stop nginx 
+    - ssh root@ruvpn.derunix.ru docker rm nginx 
     - ssh root@ruvpn.derunix.ru docker run -d --name nginx -p 80:80 -p 443:443 -net web --restart=always  -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx:/etc/nginx  "$CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest"
   environment:
     name: prod
