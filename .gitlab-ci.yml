@@ -143,10 +143,10 @@ deploy-prod:
     - ssh root@ruvpn.derunix.ru docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
     - ssh root@ruvpn.derunix.ru docker pull "$CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest"
     - ssh root@ruvpn.derunix.ru docker stop nginx && docker rm nginx
-    - ssh root@ruvpn.derunix.ru docker run -d --name nginx -p 80:80 -p 443:443 --restart=always  -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx:/etc/nginx  "$CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest"
+    - ssh root@ruvpn.derunix.ru docker run -d --name nginx —-hostname nginx -p 80:80 -p 443:443 --restart=always  -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx:/etc/nginx  "$CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest"
     - ssh root@ruvpn.derunix.ru docker pull "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"
     - ssh root@ruvpn.derunix.ru docker stop php && docker rm php
-    - ssh root@ruvpn.derunix.ru docker run -d --name php --restart=always  "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"    
+    - ssh root@ruvpn.derunix.ru docker run -d --name php —hostname php --restart=always  "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"    
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
@@ -169,8 +169,8 @@ config-prod:
   script:
     - scp  -o StrictHostKeyChecking=no  nginx.conf root@ruvpn.derunix.ru:/etc/nginx/nginx.conf
     - ssh root@ruvpn.derunix.ru docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
-    - ssh root@ruvpn.derunix.ru docker run -d --name php  --restart=always  "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"    || true
-    - ssh root@ruvpn.derunix.ru docker run --rm --name nginx-test -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest /usr/sbin/nginx -t
+    - ssh root@ruvpn.derunix.ru docker run -d --name php —-hostname php  --restart=always  "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"    || true
+    - ssh root@ruvpn.derunix.ru docker run --rm --name nginx-test —-hostname nginx-test -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest /usr/sbin/nginx -t
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
