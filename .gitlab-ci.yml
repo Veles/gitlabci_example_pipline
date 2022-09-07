@@ -169,9 +169,9 @@ config-prod:
     -  ssh root@ruvpn.derunix.ru docker network rm web
     -  ssh root@ruvpn.derunix.ru docker network create web 
     -  ssh root@ruvpn.derunix.ru docker rm -f php
-    -  ssh root@ruvpn.derunix.ru docker run -i -d —-network web —-hostname php  --restart=always  "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"    || true
-    -  ssh root@ruvpn.derunix.ru docker network connect  web php|| true
-    -  ssh root@ruvpn.derunix.ru docker run --rm -i -d —-network web --hostname nginx-test -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest /usr/sbin/nginx -t
+    -  ssh root@ruvpn.derunix.ru docker run -d —-network web —-name php --restart=always "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"    
+    -  ssh root@ruvpn.derunix.ru docker network connect web php 
+    -  ssh root@ruvpn.derunix.ru docker run --rm —-net web --hostname nginx-test -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest /usr/sbin/nginx -t
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
