@@ -18,7 +18,6 @@ nginx-build:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
     IMAGE_NAME: "nginx"
-
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - cd build/nginx
@@ -30,10 +29,7 @@ nginx-build:
     - docker tag $IMAGE_ID $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
-  when: manual
-  only:
-    changes:
-      - ./build/nginx/Dockerfile  
+
 
 site-build:
   stage: build
@@ -73,7 +69,6 @@ php-build:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
     IMAGE_NAME: "php"
-
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - cd build/php
@@ -82,16 +77,12 @@ php-build:
     - docker tag $IMAGE_ID $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
-  when: manual
-  only:
-    changes:
-      - ./build/php/Dockerfile  
-    
+
+
 nginx-test:
   needs: 
     - job: nginx-build
       optional: true
-
   stage: test
   tags: 
     - docker
@@ -104,7 +95,6 @@ nginx-test:
     DOCKER_HOST: tcp://dockerdaemon:2375/
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
-
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - docker pull $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest
