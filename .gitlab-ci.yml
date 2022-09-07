@@ -106,11 +106,11 @@ php-test:
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - docker pull $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest
-    - docker run --rm --name test_nginx $CI_REGISTRY/$CI_PROJECT_PATH/php:latest /bin/php-fpm -v
+    - docker run --rm --name test_php $CI_REGISTRY/$CI_PROJECT_PATH/php:latest /bin/php-fpm -v
 
 
 deploy-prod:
-needs:
+  needs:
     - job: php-test
       optional: false
     - job: nginx-test
@@ -133,6 +133,7 @@ needs:
     - ssh root@ruvpn.derunix.ru docker pull "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"
     - ssh root@ruvpn.derunix.ru docker rm nginx || echo "nginx not exist"
     - ssh root@ruvpn.derunix.ru docker run -d --name nginx -p 80:80 -p 443:443 -net web --restart=always  -v /etc/letsencrypt:/etc/letsencrypt -v /etc/nginx:/etc/nginx  "$CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest"
+    - ssh root@ruvpn.derunix.ru docker run -d --name php  -net web --restart=always  "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"    
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
@@ -141,7 +142,7 @@ needs:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH 
 
 config-prod:
-needs:
+  needs:
     - job: nginx-test
       optional: false
   tags: 
@@ -164,7 +165,5 @@ needs:
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
-  when: manual
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
 
