@@ -65,9 +65,11 @@ php-build:
     changes:
       - ./build/php/Dockerfile  
     
-php-test:
+nginx-test:
   needs: 
-   - php-build
+   - nginx-build
+     optional: true
+
   stage: test
   tags: 
     - docker
@@ -90,6 +92,7 @@ php-test:
   stage: test
   needs: 
    - php-build
+     optional: true
   tags: 
     - docker
   image:
