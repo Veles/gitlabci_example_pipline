@@ -33,7 +33,7 @@ nginx-build:
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
   only:
     changes:
-      - build/nginx/Dockerfile  
+      - ./build/nginx/Dockerfile  
 
 
 php-build:
@@ -61,7 +61,7 @@ php-build:
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
   only:
     changes:
-      - build/php/Dockerfile  
+      - ./build/php/Dockerfile  
     
 containers-test:
   stage: test
