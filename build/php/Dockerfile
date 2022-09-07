@@ -20,5 +20,3 @@ WORKDIR /www
 CMD ["/usr/sbin/php-fpm", "-F"]
 
 EXPOSE 80
-
-HEALTHCHECK --interval=5s --timeout=5s CMD curl -f http://127.0.0.1/php-fpm-ping || exit 1
