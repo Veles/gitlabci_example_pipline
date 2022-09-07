@@ -128,6 +128,8 @@ deploy-prod:
       optional: false
     - job: nginx-test
       optional: false
+    - job: site-build
+      artifacts: true
   tags: 
   -  shell
   before_script:
