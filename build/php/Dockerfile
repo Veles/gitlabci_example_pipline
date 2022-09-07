@@ -17,7 +17,7 @@ COPY www /www
 
 WORKDIR /www
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["php-fpm81", "-F"]
 
 EXPOSE 80
 
