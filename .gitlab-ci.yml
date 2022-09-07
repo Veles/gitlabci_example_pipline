@@ -153,7 +153,7 @@ deploy-prod:
   environment:    
     name: prod
     url: https://ruvpn.derunix.ru
-  dependencies: [ "build/site.tar.gz"]
+  
 
 config-prod:
   tags: 
