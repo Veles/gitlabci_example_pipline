@@ -46,20 +46,18 @@ site-build:
      alias: dockerdaemon
   variables:
     DOCKER_HOST: tcp://dockerdaemon:2375/
-    DOCKER_DRIVER: overlay2
+    DOCKER_DRIVER: overlay2 
     DOCKER_TLS_CERTDIR: ""
   script:
    - cd build/site
+   - rm .placeholder
    - git clone https://github.com/banago/simple-php-website.git . 
    - cd .. && tar -czf site.tar.gz site
   artifacts:
     paths:
       - build/site.tar.gz
     expire_in: 10 minutes
-  
-  only:
-    changes:
-      - ./build/nginx/Dockerfile  
+
 
 php-build:
   stage: build
