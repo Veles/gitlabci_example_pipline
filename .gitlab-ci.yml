@@ -1,6 +1,7 @@
 stages:
   - build
   - config
+  - test
   - deploy
 
 
@@ -56,13 +57,37 @@ php-build:
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
     
+test:
+  stage: test
+  needs: 
+   - nginx-build
+   - php-build
+  tags: 
+    - docker
+  image:
+    name: docker:stable
+  services:
+   - name: docker:dind
+     alias: dockerdaemon
+  variables:
+    DOCKER_HOST: tcp://dockerdaemon:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    IMAGE_NAME: "php"
+
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker pull $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest
+    - docker pull $CI_REGISTRY/$CI_PROJECT_PATH/php:latest
+    - docker run --rm --name test_nginx $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest nginx -t
+    - docker run --rm --name test_php $CI_REGISTRY/$CI_PROJECT_PATH/php:latest php -v
+    
 
 
 
 deploy-prod:
   needs: 
-    - nginx-build
-    - php-build
+  - test
   tags: 
   -  shell
   before_script:
@@ -86,8 +111,7 @@ deploy-prod:
 
 config-prod:
   needs: 
-    - nginx-build
-    - php-build
+    - test
   tags: 
   -  shell
   before_script:
