@@ -12,7 +12,8 @@ RUN apk -U upgrade && apk add --no-cache \
     && adduser -S -G php php \
     && rm -rf /var/cache/apk/* /etc/nginx/http.d/* /etc/php81/conf.d/* /etc/php81/php-fpm.d/*
 
-COPY files/s6-overlay files/general files/php81 /
+COPY etc/  /
+COPY www /www
 
 WORKDIR /www
 
