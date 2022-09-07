@@ -45,8 +45,6 @@ php-build:
   services:
    - name: docker:dind
      alias: dockerdaemon
-  trigger:
-  test/php
   variables:
     DOCKER_HOST: tcp://dockerdaemon:2375/
     DOCKER_DRIVER: overlay2
