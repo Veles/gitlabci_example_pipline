@@ -31,6 +31,9 @@ nginx-build:
     - docker tag $IMAGE_ID $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
+  only:
+    changes:
+      - build/nginx/Dockerfile  
 
 
 php-build:
@@ -56,6 +59,9 @@ php-build:
     - docker tag $IMAGE_ID $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME:latest
+  only:
+    changes:
+      - build/php/Dockerfile  
     
 containers-test:
   stage: test
