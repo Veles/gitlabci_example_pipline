@@ -165,7 +165,7 @@ config-prod:
   stage: build
   script:
     - scp  -o StrictHostKeyChecking=no  nginx.conf root@ruvpn.derunix.ru:/etc/nginx/nginx.conf
-    - ssh root@ruvpn.derunix.ru docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
+    - ssh root@ruvpn.derunix.ru docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"  
     -  ssh root@ruvpn.derunix.ru docker network rm web || true
     -  ssh root@ruvpn.derunix.ru docker network create web || true
     -  ssh root@ruvpn.derunix.ru docker rm -f php
