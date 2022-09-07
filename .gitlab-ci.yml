@@ -100,7 +100,7 @@ config-prod:
     - echo -e "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
   stage: config
   script:
-    - scp nginx.conf root@ruvpn.derunix.ru:/etc/nginx/nginx.conf -o StrictHostKeyChecking=no  
+    - scp  -o StrictHostKeyChecking=no  nginx.conf root@ruvpn.derunix.ru:/etc/nginx/nginx.conf
     - ssh root@ruvpn.derunix.ru docker run --rm --name nginx-test -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro $CI_REGISTRY/$CI_PROJECT_PATH/nginx:latest /usr/sbin/nginx -t
   environment:
     name: prod
