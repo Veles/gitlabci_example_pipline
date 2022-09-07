@@ -149,9 +149,9 @@ deploy-prod:
     - ssh root@ruvpn.derunix.ru docker run -d --name php —hostname php --restart=always -v /www/public:/www/public  "$CI_REGISTRY/$CI_PROJECT_PATH/php:latest"  
     - ssh root@ruvpn.derunix.ru rm -rf /www/public && mkdir -p /www/public  && tar -xzf build/site.tar.gz -C /www/public/
   environment:    
-
     name: prod
     url: https://ruvpn.derunix.ru
+  dependencies: [ "build/site.tar.gz"]
 
 config-prod:
   tags: 
