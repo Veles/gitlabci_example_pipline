@@ -35,6 +35,31 @@ nginx-build:
     changes:
       - ./build/nginx/Dockerfile  
 
+site-build:
+  stage: build
+  tags: 
+    - shell
+  image:
+    name: docker:stable
+  services:
+   - name: docker:dind
+     alias: dockerdaemon
+  variables:
+    DOCKER_HOST: tcp://dockerdaemon:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  script:
+   - cd build/site
+   - git clone https://github.com/banago/simple-php-website.git . 
+   - cd .. && tar -czf site.tar.gz site
+  artifacts:
+    paths:
+      - build/site.tar.gz
+    expire_in: 10 minutes
+  
+  only:
+    changes:
+      - ./build/nginx/Dockerfile  
 
 php-build:
   stage: build
@@ -137,9 +162,6 @@ deploy-prod:
   environment:
     name: prod
     url: https://ruvpn.derunix.ru
-  when: manual
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH 
 
 config-prod:
   needs:
